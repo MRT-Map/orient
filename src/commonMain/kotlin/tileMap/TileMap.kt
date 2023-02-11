@@ -1,5 +1,6 @@
 package tileMap
 
+import com.soywiz.kmem.*
 import com.soywiz.korge.input.*
 import com.soywiz.korge.view.*
 import com.soywiz.korio.async.*
@@ -8,6 +9,7 @@ import kotlinx.coroutines.*
 fun Container.tileMap(settings: TileSettings, views: Views) = TileMap(settings, views).addTo(this)
 
 class TileMap(var settings: TileSettings, val views: Views) : Container() {
+    var zoom = 8.0
     private var tiles = mutableListOf<Tile>()
 
     init {
@@ -17,13 +19,14 @@ class TileMap(var settings: TileSettings, val views: Views) : Container() {
     }
 
     override fun onParentChanged() {
-
         val view: View = parent ?: this
 
         mouse {
             draggable(selector = view, autoMove = true)
             scrollAnywhere {
-
+                zoom += it.scrollDeltaYLines
+                zoom = zoom.clamp(0.0, 10.0)
+                println(zoom)
             }
         }
     }

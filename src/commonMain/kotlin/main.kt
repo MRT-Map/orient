@@ -12,6 +12,7 @@ suspend fun main() = Korge(bgcolor = Colors["#2b2b2b"]) {
 
 class MyScene : Scene() {
 	override suspend fun SContainer.sceneMain() {
-        tileMap(TileSettings.default, views)
+        val tileMap = tileMap(TileSettings.default, views)
+        hud(tileMap)
 	}
 }
