@@ -3,21 +3,30 @@ package tileMap
 import com.soywiz.korge.view.*
 import com.soywiz.korim.format.*
 import com.soywiz.korio.net.http.*
+import com.soywiz.korma.geom.*
 
-suspend fun TileMap.tile(coord: TileCoord) = Tile(coord).addTo(this).update(this.settings)
+suspend fun TileMap.tile(coord: TileCoord) = Tile(coord).addTo(this).updateImage(this.settings).updatePosition(this)
 
-class Tile(private val coord: TileCoord): Container() {
-    suspend fun update(settings: TileSettings): Tile {
-        xy(
-            coord.x * Zoom(coord.z.toFloat()).mapSize(settings) - 0.5,
-            -coord.y * Zoom(coord.z.toFloat()).mapSize(settings) + settings.maxZoomRange + 0.5
-        )
+class Tile(private val coord: TileCoord) : Container() {
+    suspend fun updateImage(settings: TileSettings): Tile {
         val url = coord.url(settings)
         val client = HttpClient()
-        image(PNG.read(client.readBytes(url), filename = coord.toString()))
-            .size(Zoom(coord.z.toFloat()).mapSize(settings), Zoom(coord.z.toFloat())
-                .mapSize(settings))
+        try {
+            image(PNG.read(client.readBytes(url), filename = coord.toString()))
+                .size(128, 128)
+                .anchor(Anchor.TOP_LEFT)
+        } catch (e: Http.HttpException) {
+            if (e.statusCode != 404) throw e
+        }
 
+        return this
+    }
+
+    fun updatePosition(map: TileMap): Tile {
+        xy(
+            (coord.x * 128 + map.views.virtualWidth / 2).toDouble(),
+            (-coord.y * 128 - map.settings.maxZoomRange * 8.0 + map.views.virtualHeight / 2)
+        )
         return this
     }
 }

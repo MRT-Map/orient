@@ -6,7 +6,7 @@ plugins {
 }
 
 korge {
-	id = "io.github.iiiii7d.orient"
+	id = "io.github.mrt_map.orient"
 // To enable all targets at once
 
 	//targetAll()
@@ -21,4 +21,5 @@ korge {
 	//targetDesktop()
 	//targetIos()
 	//targetAndroidIndirect() // targetAndroidDirect()
+
 }
