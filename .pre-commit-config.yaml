@@ -1,0 +1,9 @@
+repos:
+  - repo: local
+    hooks:
+    - id: kt-fmt
+      name: KtFmt
+      pass_filenames: false
+      entry: ./gradlew ktfmtPreCommit
+      language: system
+      types: [ text ]
