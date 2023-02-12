@@ -3,7 +3,7 @@ package tileMap
 import com.soywiz.korma.geom.*
 import kotlin.math.*
 
-data class TileCoord(val z: Short, val x: Int, val y: Int) {
+data class TileCoord(val z: Byte, val x: Int, val y: Int) {
 
     fun url(settings: TileSettings): String {
         val zz = 2.0.pow(settings.maxTileZoom - z)
