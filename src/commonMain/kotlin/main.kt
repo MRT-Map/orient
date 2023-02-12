@@ -6,9 +6,9 @@ import tileMap.*
 
 suspend fun main() =
     Korge(bgcolor = Colors["#2b2b2b"]) {
-      val sceneContainer = sceneContainer()
+        val sceneContainer = sceneContainer()
 
-      sceneContainer.changeTo({ MyScene() })
+        sceneContainer.changeTo({ MyScene() })
     }
 
 class MyScene : Scene() {

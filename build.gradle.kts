@@ -1,8 +1,10 @@
 import com.soywiz.korge.gradle.*
+import com.ncorti.ktfmt.gradle.tasks.*
 
 @Suppress("DSL_SCOPE_VIOLATION")
 plugins {
 	alias(libs.plugins.korge)
+    id("com.ncorti.ktfmt.gradle") version "0.11.0"
 }
 
 korge {
@@ -22,4 +24,12 @@ korge {
 	//targetIos()
 	//targetAndroidIndirect() // targetAndroidDirect()
 
+}
+
+ktfmt {
+    kotlinLangStyle()
+}
+tasks.register<KtfmtFormatTask>("ktfmtPrecommit") {
+    source = project.fileTree(rootDir)
+    include("**/*.kt")
 }

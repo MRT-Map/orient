@@ -13,9 +13,15 @@ class TileMap(var settings: TileSettings, val views: Views) : Container() {
     var zoom = 8.0
     private var tiles = mutableMapOf<TileCoord, Deferred<Tile>>()
 
-    val mouseWorldCoordinates get() = Point(views.globalMouseX - views.virtualWidth / 2, views.globalMouseY - views.virtualHeight / 2) / 4 + worldOffset
-    val worldOffset get() = Point(globalX, globalY) / -4
-    
+    val mouseWorldCoordinates
+        get() =
+            Point(
+                views.globalMouseX - views.virtualWidth / 2,
+                views.globalMouseY - views.virtualHeight / 2
+            ) / 4 + worldOffset
+    val worldOffset
+        get() = Point(globalX, globalY) / -4
+
     init {
         launch(Dispatchers.Unconfined) { updateTilesShown() }
     }
@@ -26,13 +32,18 @@ class TileMap(var settings: TileSettings, val views: Views) : Container() {
         val worldHeight = views.virtualHeight / 64
 
         val newTiles = mutableMapOf<TileCoord, Deferred<Tile>>()
-        for (x in (centerTileCoord.x - worldWidth / 2)..(centerTileCoord.x + worldWidth / 2))
-            for (y in (centerTileCoord.y - worldHeight / 2)..(centerTileCoord.y + worldHeight / 2)) {
-                val tileCoord = TileCoord(8, x, -y)
-                newTiles[tileCoord] = tiles[tileCoord] ?: async(Dispatchers.Unconfined) { tile(tileCoord) }
-            }
+        for (x in
+            (centerTileCoord.x - worldWidth / 2)..(centerTileCoord.x + worldWidth / 2)) for (y in
+            (centerTileCoord.y - worldHeight / 2)..(centerTileCoord.y + worldHeight / 2)) {
+            val tileCoord = TileCoord(8, x, -y)
+            newTiles[tileCoord] =
+                tiles[tileCoord] ?: async(Dispatchers.Unconfined) { tile(tileCoord) }
+        }
 
-        tiles.filter { (k, _) -> !newTiles.containsKey(k) }.values.forEach { if (it.isCompleted) it.await().removeFromParent() else it.cancel() }
+        tiles
+            .filter { (k, _) -> !newTiles.containsKey(k) }
+            .values
+            .forEach { if (it.isCompleted) it.await().removeFromParent() else it.cancel() }
         tiles = newTiles
     }
 
@@ -41,9 +52,7 @@ class TileMap(var settings: TileSettings, val views: Views) : Container() {
 
         mouse {
             draggable(selector = view, autoMove = true)
-            upAnywhere {
-                launch(Dispatchers.Unconfined) { updateTilesShown() }
-            }
+            upAnywhere { launch(Dispatchers.Unconfined) { updateTilesShown() } }
             scrollAnywhere {
                 zoom += it.scrollDeltaYLines
                 zoom = zoom.clamp(0.0, 10.0)
