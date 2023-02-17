@@ -3,6 +3,7 @@
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.JsonObject
+import tileMap.TileSettings
 
 @Serializable
 data class Configuration(
@@ -55,38 +56,38 @@ data class World(
     @SerialName("sealevel") val seaLevel: Int,
     @SerialName("worldheight") val worldHeight: Int,
     val maps: Set<Map>
-) {
-    companion object {
-        @Serializable data class Center(val x: Double, val y: Double, val z: Double)
+)
 
-        @Serializable
-        data class Map(
-            val type: String,
-            val name: String,
-            val title: String,
-            val icon: String?,
-            val prefix: String,
-            val background: String?,
-            @SerialName("backgroundday") val backgroundDay: String?,
-            @SerialName("backgroundnight") val backgroundNight: String?,
-            @SerialName("bigmap") val bigMap: Boolean,
-            @SerialName("mapzoomout") val mapZoomOut: Int,
-            @SerialName("mapzoomin") val mapZoomIn: Int,
-            @SerialName("boostzoom") val boostZoom: Int,
-            @SerialName("tilescale") val tileScale: Int,
-            val protected: Boolean,
-            @SerialName("image-format") val imageFormat: String,
-            @SerialName("append_to_world") val appendToWorld: String? = null,
-            val lighting: String,
-            @SerialName("nightandday") val nightAndDay: Boolean,
-            val shader: String,
-            val perspective: String,
-            val azimuth: Double,
-            val inclination: Double,
-            val scale: Int,
-            @SerialName("worldtomap") val worldToMap: List<Double>,
-            @SerialName("maptoworld") val mapToWorld: List<Double>,
-            @SerialName("compassview") val compassView: String
-        )
-    }
+@Serializable data class Center(val x: Double, val y: Double, val z: Double)
+
+@Serializable
+data class Map(
+    val type: String,
+    val name: String,
+    val title: String,
+    val icon: String?,
+    val prefix: String,
+    val background: String?,
+    @SerialName("backgroundday") val backgroundDay: String?,
+    @SerialName("backgroundnight") val backgroundNight: String?,
+    @SerialName("bigmap") val bigMap: Boolean,
+    @SerialName("mapzoomout") val mapZoomOut: Byte,
+    @SerialName("mapzoomin") val mapZoomIn: Byte,
+    @SerialName("boostzoom") val boostZoom: Byte,
+    @SerialName("tilescale") val tileScale: Byte,
+    val protected: Boolean,
+    @SerialName("image-format") val imageFormat: String,
+    @SerialName("append_to_world") val appendToWorld: String? = null,
+    val lighting: String,
+    @SerialName("nightandday") val nightAndDay: Boolean,
+    val shader: String,
+    val perspective: String,
+    val azimuth: Double,
+    val inclination: Double,
+    val scale: Int,
+    @SerialName("worldtomap") val worldToMap: List<Double>,
+    @SerialName("maptoworld") val mapToWorld: List<Double>,
+    @SerialName("compassview") val compassView: String
+) {
+    fun tileSettings(url: String) = TileSettings(url, this.mapZoomOut, 128.0 / this.scale)
 }
